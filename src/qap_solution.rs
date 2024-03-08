@@ -5,7 +5,7 @@ use std::fmt;
 #[derive(Debug)]
 pub struct QapSolution {
     pub instance_size: u32,
-    pub assignments: [u32; MAX_INSTANCE_SIZE],
+    pub assignments: [usize; MAX_INSTANCE_SIZE],
 }
 
 impl fmt::Display for QapSolution {
@@ -22,13 +22,12 @@ impl fmt::Display for QapSolution {
 
 impl QapSolution {
     pub fn random_solution(instance_size: u32) -> Self {
-        let mut array: [u32; MAX_INSTANCE_SIZE] = [0; MAX_INSTANCE_SIZE];
+        let mut array: [usize; MAX_INSTANCE_SIZE] = [0; MAX_INSTANCE_SIZE];
         let mut rng: ThreadRng = rand::thread_rng();
 
         let u_instance_size: usize = instance_size as usize;
         for i in 0..u_instance_size {
-            let val: u32 = i as u32;
-            array[i] = val;
+            array[i] = i;
         }
         for i in 0..u_instance_size {
             let src_idx: usize = rng.gen_range(0..u_instance_size - i);
