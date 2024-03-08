@@ -3,8 +3,8 @@ use rand::prelude::*;
 
 #[derive(Debug)]
 pub struct QapSolution {
-    instance_size: u32,
-    assignments: [u32; MAX_INSTANCE_SIZE],
+    pub instance_size: u32,
+    pub assignments: [u32; MAX_INSTANCE_SIZE],
 }
 
 impl QapSolution {

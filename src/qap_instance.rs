@@ -5,9 +5,9 @@ use crate::MAX_INSTANCE_SIZE;
 
 #[derive(Debug)]
 pub struct QapInstance {
-    instance_size: u32,
-    costs: [[i32; MAX_INSTANCE_SIZE]; MAX_INSTANCE_SIZE],
-    interactions: [[i32; MAX_INSTANCE_SIZE]; MAX_INSTANCE_SIZE],
+    pub instance_size: u32,
+    pub costs: [[u32; MAX_INSTANCE_SIZE]; MAX_INSTANCE_SIZE],
+    pub interactions: [[u32; MAX_INSTANCE_SIZE]; MAX_INSTANCE_SIZE],
 }
 
 impl fmt::Display for QapInstance {
@@ -36,13 +36,13 @@ impl QapInstance {
     pub fn instance_from_file(file_path: &str) -> Self {
         let contents: String =
             fs::read_to_string(file_path).expect("Should have been able to read the file");
-        let mut numbers_so_far: Vec<Vec<i32>> = vec![];
+        let mut numbers_so_far: Vec<Vec<u32>> = vec![];
         let mut instance_size: u32 = 0;
         let mut n_lines_costs: u32 = 0;
         let mut n_lines_interactions: u32 = 0;
-        let mut costs: [[i32; MAX_INSTANCE_SIZE]; MAX_INSTANCE_SIZE] =
+        let mut costs: [[u32; MAX_INSTANCE_SIZE]; MAX_INSTANCE_SIZE] =
             [[0; MAX_INSTANCE_SIZE]; MAX_INSTANCE_SIZE];
-        let mut interactions: [[i32; MAX_INSTANCE_SIZE]; MAX_INSTANCE_SIZE] =
+        let mut interactions: [[u32; MAX_INSTANCE_SIZE]; MAX_INSTANCE_SIZE] =
             [[0; MAX_INSTANCE_SIZE]; MAX_INSTANCE_SIZE];
         let mut lines_read: u32 = 0;
         for line in contents.split("\n") {
@@ -59,7 +59,7 @@ impl QapInstance {
             lines_read += 1;
             // I really wanted to use match here, but I found no way to compare to a variable
             if lines_read == 1 {
-                instance_size = numbers_so_far[0][0] as u32;
+                instance_size = numbers_so_far[0][0];
                 numbers_so_far.clear();
                 n_lines_costs = instance_size + 1;
                 n_lines_interactions = 2 * instance_size + 1;
