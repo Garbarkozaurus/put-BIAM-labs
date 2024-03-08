@@ -1,10 +1,23 @@
 use crate::MAX_INSTANCE_SIZE;
 use rand::prelude::*;
+use std::fmt;
 
 #[derive(Debug)]
 pub struct QapSolution {
     pub instance_size: u32,
     pub assignments: [u32; MAX_INSTANCE_SIZE],
+}
+
+impl fmt::Display for QapSolution {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Instance size: {}\n", self.instance_size).unwrap();
+        write!(f, "Assignments\n").unwrap();
+        for i in 0..self.instance_size {
+            write!(f, "{} ", self.assignments[i as usize]).unwrap();
+        }
+        write!(f, "\n").unwrap();
+        Ok(())
+    }
 }
 
 impl QapSolution {
