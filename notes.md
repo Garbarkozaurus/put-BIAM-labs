@@ -35,3 +35,30 @@ y=0101
 number of evaluations, number of neighborhoods, running time, quality of starting solution, final permutation, initial permutation, quality of final permutation - will tell next week
 
 Implement basic greedy or steepest
+a[..12].copy_from_slice(&[7, 0, 5, 1, 10, 9, 2, 4, 8, 6, 11, 3]);
+
+## Lab3 - 2024-03-14
+
+Qap - swap products of rows and columns
+Greedy - how about not permuting a neighborhood, but just the starting index?
+
+IMPORTANT - give random methods similar amount of time as LS
+No need to see specific values
+Neighborhood description can be short, ~1 sentence (1 type is enough)
+
+In plots - on x-axis, instance size or instance name
+Chose and justify the selected Q - quality measure comparing obtained solutions to the optima
+Include whiskers when plotting averages
+Efficiency is supposed to include quality and time in a single number
+Algorithm steps - jumping from neighbor to neighbor
+Evaluated - even delta calculation. "Number of explored solutions"
+In point 4 - best result over given number of runs; supposed to be nonincreasing
+Can include cumulative average
+Permutation similarity in QAP - number of the same numbers at the same position
+TSP - number of shared edges
+Make sure to normalise
+General conclusions: some algorithm is always better/worse then some other
+Less general: A is better than B on "large instances"
+... -> more and more specific conditions
+Difficulties: of any type - implementation, running time, conclusions...
+UPLOAD: pdf and code source files (not for plotting, just the computational part)
