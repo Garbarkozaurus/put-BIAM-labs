@@ -60,7 +60,7 @@ impl SearchMonitor {
             .create(true)
             .open(&history_file_name)
         {
-            Err(why) => panic!("couldn't create {}: {}", file_name, why),
+            Err(why) => panic!("couldn't create {}: {}", history_file_name, why),
             Ok(file) => file,
         };
         let _ = history_file.write((self.run_id.to_string() + ";").as_bytes());
