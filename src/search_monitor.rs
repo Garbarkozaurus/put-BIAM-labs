@@ -43,7 +43,7 @@ impl SearchMonitor {
             let _ = file.write((self.best_assignments[i].to_string() + ",").as_bytes());
         }
         let _ = file.write(
-            self.best_assignments[self.instance_size]
+            self.best_assignments[self.instance_size - 1]
                 .to_string()
                 .as_bytes(),
         );
