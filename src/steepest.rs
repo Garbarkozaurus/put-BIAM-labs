@@ -1,11 +1,10 @@
-use std::i32::MAX;
-use rand::prelude::ThreadRng;
-use rand::Rng;
 use crate::utils::basic_evaluate;
 use crate::QapInstance;
 use crate::QapSolution;
 use crate::MAX_INSTANCE_SIZE;
-
+use rand::prelude::ThreadRng;
+use rand::Rng;
+use std::i32::MAX;
 
 fn naive_steepest_best_swap(instance: &QapInstance, solution: &QapSolution) -> (usize, usize, i32) {
     let mut best_delta: i32 = MAX;
@@ -13,8 +12,8 @@ fn naive_steepest_best_swap(instance: &QapInstance, solution: &QapSolution) -> (
     let mut best_swaps: [[usize; 2]; MAX_INSTANCE_SIZE * MAX_INSTANCE_SIZE] =
         [[0, 0]; MAX_INSTANCE_SIZE * MAX_INSTANCE_SIZE];
     let original_eval = basic_evaluate(&instance, &solution) as i32;
-    for i in 0..(instance.instance_size as usize) - 1 {
-        for j in i + 1..(instance.instance_size as usize) {
+    for i in 0..(instance.instance_size - 1) {
+        for j in i + 1..(instance.instance_size) {
             let mut swapped_order = solution.assignments.clone();
             swapped_order.swap(i, j);
             let new_solution = QapSolution {
@@ -26,7 +25,7 @@ fn naive_steepest_best_swap(instance: &QapInstance, solution: &QapSolution) -> (
             if delta == best_delta {
                 best_swaps[neighbors_with_best_delta][0] = i;
                 best_swaps[neighbors_with_best_delta][1] = j;
-                neighbors_with_best_delta+=1;
+                neighbors_with_best_delta += 1;
             }
             if delta < best_delta {
                 best_swaps[0][0] = i;
