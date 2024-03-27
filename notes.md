@@ -62,3 +62,14 @@ Less general: A is better than B on "large instances"
 ... -> more and more specific conditions
 Difficulties: of any type - implementation, running time, conclusions...
 UPLOAD: pdf and code source files (not for plotting, just the computational part)
+
+## Lab4 - 2024-03-21
+
+Random walk should always visit more solutions than random search
+
+Plot - think about the goal of the visualization, consider the reader
+Chart title can/should be removed if there is a caption
+Font size in plots - not smaller than subscript/superscript in regular text;
+not bigger than regular text
+Colors are often overused; if multiple colors on one plot - make sure they are meaningful
+Use tight layout
