@@ -23,6 +23,7 @@ pub fn random_walk(
         running_time_micros: 0,
         best_assignments: [0; MAX_INSTANCE_SIZE],
         cost_history: vec![],
+        cost_updates_evals: vec![0],
     };
     let start: time::Instant = time::Instant::now();
     let mut current_solution: QapSolution = QapSolution::random_solution(instance.instance_size);
@@ -48,6 +49,7 @@ pub fn random_walk(
                 assignments: current_solution.assignments,
             };
             monitor.cost_history.push(best_cost);
+            monitor.cost_updates_evals.push(monitor.num_evaluations);
         }
         monitor.num_evaluations += 1;
         monitor.num_visited_solutions += 1;

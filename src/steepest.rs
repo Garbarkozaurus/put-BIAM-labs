@@ -105,6 +105,7 @@ pub fn deltas_steepest_local_search(
         running_time_micros: 0,
         best_assignments: [0; MAX_INSTANCE_SIZE],
         cost_history: vec![],
+        cost_updates_evals: vec![0],
     };
     let start: time::Instant = time::Instant::now();
     let mut starting_solution: QapSolution = QapSolution::random_solution(instance.instance_size);
@@ -116,6 +117,8 @@ pub fn deltas_steepest_local_search(
         if delta >= 0 {
             break;
         }
+        // num_evaluations is updated within the swap-finding function
+        monitor.cost_updates_evals.push(monitor.num_evaluations);
         starting_solution.assignments.swap(idx_a, idx_b);
         monitor.num_visited_solutions += 1;
         cost = ((cost as i32) + delta) as u32;

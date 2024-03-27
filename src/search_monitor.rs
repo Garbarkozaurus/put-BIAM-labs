@@ -13,6 +13,13 @@ pub struct SearchMonitor {
     pub running_time_micros: u32,
     pub best_assignments: [usize; MAX_INSTANCE_SIZE],
     pub cost_history: Vec<u32>,
+    // How many evaluations it took before the solution at corresponding position
+    // in cost_history was found
+    // The first element will always be 0 (for the cost of the initial solution)
+    // I decided for it to be 0 and not 1, to avoid problems with plotting,
+    // and axes starting at 1.
+    // Be mindful of 0,46,91,136... in steepest
+    pub cost_updates_evals: Vec<u32>,
 }
 
 impl SearchMonitor {
@@ -65,11 +72,11 @@ impl SearchMonitor {
             Ok(file) => file,
         };
         let _ = history_file.write((self.run_id.to_string() + ";").as_bytes());
-        let history_string_vector: Vec<String> = self
-            .cost_history
-            .iter()
-            .map(|x: &u32| x.to_string())
-            .collect();
+        let mut history_string_vector: Vec<String> = vec![];
+        for (i, eval_count) in self.cost_updates_evals.iter().enumerate() {
+            history_string_vector
+                .push(eval_count.to_string() + ":" + &self.cost_history[i].to_string());
+        }
         let history_string: String = history_string_vector.join(",");
         let _ = history_file.write((history_string + "\n").as_bytes());
     }
