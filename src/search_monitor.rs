@@ -9,7 +9,8 @@ pub struct SearchMonitor {
     pub instance_size: usize,
     pub num_visited_solutions: u32,
     pub num_evaluations: u32,
-    pub running_time_ms: u32,
+    // 4 billion microseconds is still over an hour - way more than enough
+    pub running_time_micros: u32,
     pub best_assignments: [usize; MAX_INSTANCE_SIZE],
     pub cost_history: Vec<u32>,
 }
@@ -34,7 +35,7 @@ impl SearchMonitor {
                 + ";"
                 + &self.num_evaluations.to_string()
                 + ";"
-                + &self.running_time_ms.to_string()
+                + &self.running_time_micros.to_string()
                 + ";")
                 .as_bytes(),
         );

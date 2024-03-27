@@ -102,7 +102,7 @@ pub fn deltas_steepest_local_search(
         instance_size: instance.instance_size,
         num_visited_solutions: 0,
         num_evaluations: 0,
-        running_time_ms: 0,
+        running_time_micros: 0,
         best_assignments: [0; MAX_INSTANCE_SIZE],
         cost_history: vec![],
     };
@@ -123,7 +123,7 @@ pub fn deltas_steepest_local_search(
     }
     monitor.best_assignments = starting_solution.assignments;
     let duration: time::Duration = start.elapsed();
-    monitor.running_time_ms = duration.as_millis() as u32;
+    monitor.running_time_micros = duration.as_micros() as u32;
     monitor.export_to_files();
     starting_solution
 }
