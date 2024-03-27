@@ -3,10 +3,8 @@ use crate::QapSolution;
 
 pub fn basic_evaluate(instance: &QapInstance, solution: &QapSolution) -> u32 {
     let mut cost: u32 = 0;
-    for i in 0..instance.instance_size {
-        for j in 0..instance.instance_size {
-            let row: usize = i as usize;
-            let col: usize = j as usize;
+    for row in 0..instance.instance_size {
+        for col in 0..instance.instance_size {
             cost += instance.costs[row][col]
                 * instance.interactions[solution.assignments[row]][solution.assignments[col]];
         }
@@ -23,16 +21,15 @@ pub fn swap_delta(
     // likely to be the hottest function, optimise carefully!
     let mut old_subcost: u32 = 0;
     let mut new_subcost: u32 = 0;
-    let n: usize = instance.instance_size as usize;
     // immutable reference
-    let sol: &[usize] = &solution.assignments[..n];
+    let sol: &[usize] = &solution.assignments[..instance.instance_size];
     // This cloning operation might take a while, but it makes
     // the code easier to follow (and within my ability to write it)
     let mut sol2: [usize; 256] = solution.assignments.clone();
     sol2.swap(idx_a, idx_b);
     // Impacts only rows and columns idx_a and idx_b of A
     // the rows are multiplied by B in the order of teh permutation
-    for i in 0..n {
+    for i in 0..instance.instance_size {
         // This block handles columns of the "swapped rows"
         old_subcost += instance.costs[idx_a][i] * instance.interactions[sol[idx_a]][sol[i]];
         old_subcost += instance.costs[idx_b][i] * instance.interactions[sol[idx_b]][sol[i]];

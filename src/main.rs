@@ -6,7 +6,7 @@ pub mod steepest;
 pub mod utils;
 use std::env;
 
-use crate::utils::basic_evaluate;
+use crate::utils::{basic_evaluate, swap_delta};
 
 pub const MAX_INSTANCE_SIZE: usize = 256;
 
@@ -15,20 +15,19 @@ fn main() {
     const PATH: &str = "./qap_data/tai10a.dat";
     let example_instance: QapInstance = QapInstance::instance_from_file(PATH);
 
-    let mut count = 0;
     let mut sol: QapSolution = steepest::simplest_steepest_local_search(&example_instance);
-    let mut eval: u32 = basic_evaluate(&example_instance, &sol);
-    let target = 13557864;
-    loop {
-        if eval == target {
-            break;
-        }
-        count += 1;
-        sol = steepest::simplest_steepest_local_search(&example_instance);
-        eval = basic_evaluate(&example_instance, &sol);
-        if 0.99 * (eval as f64) <= target as f64 {
-            println!("{}. {}", count, eval);
-        }
-    }
-    println!("{}", sol);
+    let old_eval = basic_evaluate(&example_instance, &sol) as i32;
+    let a = 0;
+    let b = 2;
+    let delta = swap_delta(&example_instance, &sol, a, b);
+    sol.assignments.swap(a, b);
+    let new_eval = basic_evaluate(&example_instance, &sol) as i32;
+    println!("OG eval: {}", old_eval);
+    println!("Delta: {}", delta);
+    println!(
+        "Estimated new: {}\tActual new: {}\t Error: {}",
+        old_eval + delta,
+        new_eval,
+        old_eval + delta - new_eval
+    )
 }

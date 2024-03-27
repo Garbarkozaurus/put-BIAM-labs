@@ -4,7 +4,7 @@ use std::fmt;
 
 #[derive(Debug)]
 pub struct QapSolution {
-    pub instance_size: u32,
+    pub instance_size: usize,
     pub assignments: [usize; MAX_INSTANCE_SIZE],
 }
 
@@ -13,7 +13,7 @@ impl fmt::Display for QapSolution {
         write!(f, "Instance size: {}\n", self.instance_size).unwrap();
         write!(f, "Assignments\n").unwrap();
         for i in 0..self.instance_size {
-            write!(f, "{} ", self.assignments[i as usize]).unwrap();
+            write!(f, "{} ", self.assignments[i]).unwrap();
         }
         write!(f, "\n").unwrap();
         Ok(())
@@ -21,17 +21,16 @@ impl fmt::Display for QapSolution {
 }
 
 impl QapSolution {
-    pub fn random_solution(instance_size: u32) -> Self {
+    pub fn random_solution(instance_size: usize) -> Self {
         let mut array: [usize; MAX_INSTANCE_SIZE] = [0; MAX_INSTANCE_SIZE];
         let mut rng: ThreadRng = rand::thread_rng();
 
-        let u_instance_size: usize = instance_size as usize;
-        for i in 0..u_instance_size {
+        for i in 0..instance_size {
             array[i] = i;
         }
-        for i in 0..u_instance_size {
-            let src_idx: usize = rng.gen_range(0..u_instance_size - i);
-            let target_idx: usize = u_instance_size - i - 1;
+        for i in 0..instance_size {
+            let src_idx: usize = rng.gen_range(0..instance_size - i);
+            let target_idx: usize = instance_size - i - 1;
             let tmp = array[src_idx];
             array[src_idx] = array[target_idx];
             array[target_idx] = tmp;

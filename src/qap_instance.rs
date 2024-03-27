@@ -5,7 +5,7 @@ use crate::MAX_INSTANCE_SIZE;
 
 #[derive(Debug)]
 pub struct QapInstance {
-    pub instance_size: u32,
+    pub instance_size: usize,
     pub costs: [[u32; MAX_INSTANCE_SIZE]; MAX_INSTANCE_SIZE],
     pub interactions: [[u32; MAX_INSTANCE_SIZE]; MAX_INSTANCE_SIZE],
 }
@@ -16,7 +16,7 @@ impl fmt::Display for QapInstance {
         write!(f, "Costs\n").unwrap();
         for i in 0..self.instance_size {
             for j in 0..self.instance_size {
-                write!(f, "{} ", self.costs[i as usize][j as usize]).unwrap();
+                write!(f, "{} ", self.costs[i][j]).unwrap();
             }
             write!(f, "\n").unwrap();
         }
@@ -24,7 +24,7 @@ impl fmt::Display for QapInstance {
         for i in 0..self.instance_size {
             write!(f, "{}. ", i).unwrap();
             for j in 0..self.instance_size {
-                write!(f, "{} ", self.interactions[i as usize][j as usize]).unwrap();
+                write!(f, "{} ", self.interactions[i][j]).unwrap();
             }
             write!(f, "\n").unwrap();
         }
@@ -37,7 +37,7 @@ impl QapInstance {
         let contents: String =
             fs::read_to_string(file_path).expect("Should have been able to read the file");
         let mut numbers_so_far: Vec<Vec<u32>> = vec![];
-        let mut instance_size: u32 = 0;
+        let mut instance_size: usize = 0;
         let mut n_lines_costs: u32 = 0;
         let mut n_lines_interactions: u32 = 0;
         let mut costs: [[u32; MAX_INSTANCE_SIZE]; MAX_INSTANCE_SIZE] =
@@ -59,10 +59,10 @@ impl QapInstance {
             lines_read += 1;
             // I really wanted to use match here, but I found no way to compare to a variable
             if lines_read == 1 {
-                instance_size = numbers_so_far[0][0];
+                instance_size = numbers_so_far[0][0] as usize;
                 numbers_so_far.clear();
-                n_lines_costs = instance_size + 1;
-                n_lines_interactions = 2 * instance_size + 1;
+                n_lines_costs = (instance_size as u32) + 1;
+                n_lines_interactions = 2 * (instance_size as u32) + 1;
             }
             if lines_read == n_lines_costs {
                 for (row, numbers) in numbers_so_far.iter().enumerate() {
