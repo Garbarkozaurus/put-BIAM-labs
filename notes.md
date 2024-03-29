@@ -76,15 +76,15 @@ Use tight layout
 
 Instance,timeout for rand (microseconds, as used by the implementation),known_optimum
 (No instance of size 10 has a solution provided - I have reason to believe that the optimum for tai10a is 135028, after performing 10000 runs of steepest and greedy each)
-tai10a, 100, 135028
-tai15a, 150, 388214
-tai20a, 200, 703482
-tai25b, 700, 344355646
-tai30b, 1600, 637117113
-tai35b, 2600, 283315445
-tai40b, 5200, 637250948
-tai50b, 12500, 458821517
-tai60a, 13000, 7208572
-tai80a, 35000, 13557864
-tai100b, 240000, 1185996137
+tai10a,  100,     135028
+tai15a,  150,     388214
+tai20a,  200,     703482
+tai25b,  700,     344355646
+tai30b,  1600,    637117113
+tai35b,  2600,    283315445
+tai40b,  5200,    637250948
+tai50b,  12500,   458821517
+tai60a,  13000,   7208572
+tai80a,  35000,   13557864
+tai100b, 240000,  1185996137
 tai256c, 1500000, 44759294
