@@ -1,4 +1,3 @@
-
 use crate::{qap_instance::QapInstance, qap_solution::QapSolution, MAX_INSTANCE_SIZE};
 
 /// Taken from: https://stackoverflow.com/questions/69764050/how-to-get-the-indices-that-would-sort-a-vec
@@ -28,7 +27,44 @@ pub fn rank_alignment_solution(instance: &QapInstance) -> QapSolution {
     let interactions_order: Vec<usize> = argsort(&interaction_sums);
     let mut heuristic_assignments: [usize; MAX_INSTANCE_SIZE] = [0; MAX_INSTANCE_SIZE];
     for i in 0..instance.instance_size {
-        heuristic_assignments[cost_order[i]] = interactions_order[instance.instance_size-i-1];
+        heuristic_assignments[cost_order[i]] = interactions_order[instance.instance_size - i - 1];
     }
-    QapSolution{instance_size: instance.instance_size, assignments: heuristic_assignments}
+    QapSolution {
+        instance_size: instance.instance_size,
+        assignments: heuristic_assignments,
+    }
+}
+
+pub fn row_product(row_a: usize, row_b: usize, instance: &QapInstance) -> u32 {
+    let mut sum: u32 = 0;
+    for i in 0..instance.instance_size {
+        sum += instance.costs[row_a][i] * instance.interactions[row_b][i];
+    }
+    sum
+}
+
+pub fn assign_minimum_products(instance: &QapInstance) -> QapSolution {
+    // Surprisingly, even worse than the sum one
+    let mut products: Vec<u32> = vec![];
+    for i in 0..instance.instance_size {
+        for j in 0..instance.instance_size {
+            let dot_product = row_product(i, j, &instance);
+            products.push(dot_product);
+        }
+    }
+    let mut product_order: Vec<usize> = argsort(&products);
+    let mut heuristic_assignments: [usize; MAX_INSTANCE_SIZE] = [0; MAX_INSTANCE_SIZE];
+    for i in 0..instance.instance_size {
+        let row_a: usize = product_order[0] / instance.instance_size;
+        let row_b: usize = product_order[0] % instance.instance_size;
+        heuristic_assignments[row_a] = row_b;
+        product_order.retain(|&x| {
+            (((x as usize) / instance.instance_size) != row_a)
+                & (((x as usize) % instance.instance_size) != row_b)
+        });
+    }
+    QapSolution {
+        instance_size: instance.instance_size,
+        assignments: heuristic_assignments,
+    }
 }
