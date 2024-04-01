@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 SEARCH_TYPES = ["random_search", "random_walk", "greedy", "steepest"]
@@ -97,8 +98,8 @@ def solution_similarity(sol: np.ndarray[np.int32], opt_sol: np.ndarray[np.int32]
 
 def qualities_from_costs(costs: np.ndarray[np.int32], optimal_cost: int) -> np.ndarray[np.float32]:
     vectorized_divide = np.vectorize(lambda x: optimal_cost/x)
-    efficiencies = vectorized_divide(costs)
-    return efficiencies
+    qualities = vectorized_divide(costs)
+    return qualities
 
 
 def extract_best_sols(instance_name: str, search_type: str) -> np.ndarray[np.int32, np.int32]:
@@ -108,3 +109,17 @@ def extract_best_sols(instance_name: str, search_type: str) -> np.ndarray[np.int
         sol_strings = [line.split(';')[-1] for line in lines]
         sol_indices = [list(map(int, sol_str.split(','))) for sol_str in sol_strings]
     return np.array(sol_indices)
+
+
+def color_explaining_plot() -> None:
+    for i, (search, color) in enumerate(COLOR_DICT.items()):
+        plt.bar(i*4, 4, 4, color=color, label=search, align="center")
+        plt.text(i*4, 2, search, ha="center", va="center", color="white", weight="bold")
+
+    plt.gcf().set_size_inches(10, 2.5)
+    plt.axis("off")
+    plt.show()
+
+
+if __name__ == "__main__":
+    color_explaining_plot()
