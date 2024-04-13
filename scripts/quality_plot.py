@@ -99,7 +99,7 @@ def monitored_stat_plot(
 
 def efficiency_plot(
         reported_agg: tuple[str] = ("mean"),
-        efficiency_mode: Literal["evaluated"] | Literal["visited"] = "evaluated",
+        efficiency_mode: Literal["evaluated"] | Literal["visited"] | Literal["running_time"] = "evaluated",
         search_types: list[str] = plot_utils.SEARCH_TYPES,
         export_path: str = "", export_pdf: bool = False,
         show_plot: bool = False) -> None:
@@ -125,6 +125,10 @@ def efficiency_plot(
                 ax[row, column].plot(
                     j, stat_mean,  marker="o",
                     c=plot_utils.COLOR_DICT[search_type])
+                if search_type != "greedy":
+                    ax[row, column].text(j, 1.5*stat_mean, str(np.round(stat_mean, 3)), horizontalalignment="left", verticalalignment="center", size=12)
+                else:
+                    ax[row, column].text(j, 1.1*stat_mean, str(np.round(stat_mean, 3)), horizontalalignment="left", verticalalignment="center", size=12)
             if "max" in reported_agg:
                 ax[row, column].plot(
                     j, np.max(efficiency_values),  marker="+",
@@ -138,8 +142,11 @@ def efficiency_plot(
     #         ylabs = ax[row,col].yaxis.get_ticklabels()
     #         for label in ylabs[1::2]:
     #             label.set_visible(False)
-    plt.tight_layout()
+    # plt.tight_layout()
+    # plt.rcParams["hspace"] = 0.5
+    # print(plt.rcParams.keys())
     plt.gcf().set_size_inches(12, 6)
+    plt.subplots_adjust(hspace=0.3, wspace=0.3)
     if export_pdf:
         if not export_path:
             export_path = f"efficiency_{efficiency_mode}_plot.pdf"
@@ -159,10 +166,11 @@ if __name__ == "__main__":
     # efficiency_plot(("mean"), "evaluated", show_plot=True, export_pdf=True)
     # efficiency_plot(("mean"), "visited", show_plot=True, export_pdf=True)
     # efficiency_plot(("min", "mean", "max"), "evaluated", show_plot=True)
+    efficiency_plot(efficiency_mode="running_time", export_path="efficiency_running_time.pdf", export_pdf=True, show_plot=True)
 
     # Average number of algorithm steps (number of visited solutions)
     # monitored_stat_plot("visited", search_types=["greedy", "steepest"], export_path="visited_gs_plot.pdf", export_pdf=True, show_plot=True)
     # monitored_stat_plot("visited", export_pdf=True, show_plot=True)
 
     # Average number of evaluated solutions
-    monitored_stat_plot("evaluated", ("mean"), export_pdf=True, show_plot=True)
+    # monitored_stat_plot("evaluated", ("mean"), export_pdf=True, show_plot=True)

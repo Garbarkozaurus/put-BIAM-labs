@@ -75,7 +75,7 @@ def efficiency_values(optimal_cost: int, instance_name: str, search_type: str,
     norm_factor = 0.5 * instance_size * (instance_size-1)
     monitored_stats_file_name = f"../saved_results/{search_type}/{instance_name}.txt"
     # column 2 stores information about the number of evaluated solutions
-    col_number = {"visited": 1, "evaluated": 2}[mode]
+    col_number = {"visited": 1, "evaluated": 2, "running_time": 3}[mode]
     num_evals = extract_monitored_stat_by_column(monitored_stats_file_name, col_number)
     costs = extract_best_costs(instance_name, search_type)
     costs = costs.astype(np.float64)
