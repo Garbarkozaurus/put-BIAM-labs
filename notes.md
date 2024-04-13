@@ -101,3 +101,7 @@ QAP heuristic default: fix one element at a time
 
 Stopping condition - up to you, check eKursy
 Tabu list - based on lecture info, store just the identifiers
+
+How to understand "no improvement"? No local improvement, or no local improvement?
+Dealing with 95% acceptance chance
+Is my 1% acceptance chance in the end correct?
