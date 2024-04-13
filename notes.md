@@ -88,3 +88,16 @@ tai60a,  13000,   7208572
 tai80a,  35000,   13557864
 tai100b, 240000,  1185996137
 tai256c, 1500000, 44759294
+
+## Lab 5 - 2024-03-28
+No notes
+
+## Lab 6 - 2024-04-04
+
+QAP heuristic default: fix one element at a time
+"Consider all pairs that could be fixed in one shot" - consider n^2
+
+## Lab 7 - 11.04.2024
+
+Stopping condition - up to you, check eKursy
+Tabu list - based on lecture info, store just the identifiers
