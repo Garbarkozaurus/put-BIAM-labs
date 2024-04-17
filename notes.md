@@ -104,4 +104,5 @@ Tabu list - based on lecture info, store just the identifiers
 
 How to understand "no improvement"? No local improvement, or no local improvement?
 Dealing with 95% acceptance chance
-Is my 1% acceptance chance in the end correct?
+Is my 1% acceptance chance in the end correct? (maybe I should consider a deterioration bigger than 1)
+Elite candidate list - should k be a fixed small number (I am leaning towards this option), or depend on instance size?
