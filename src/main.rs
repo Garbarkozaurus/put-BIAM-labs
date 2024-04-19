@@ -43,6 +43,7 @@ fn main() {
             random_search::random_search(&example_instance, i, instance_name, timeout);
             random_walk::random_walk(&example_instance, i, instance_name, timeout);
             simulated_annealing::deltas_simulated_annealing(&example_instance, i, instance_name);
+            tabu_search::deltas_tabu_search(&example_instance, i, instance_name);
         }
     }
 }
