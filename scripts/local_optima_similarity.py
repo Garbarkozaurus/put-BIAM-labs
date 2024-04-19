@@ -27,9 +27,10 @@ def plot_local_opt_quality_vs_not_worse_sim(
             opt_cost, opt_sol = results_loading.load_optimum(instance)
             best_qualities = plot_utils.qualities_from_costs(best_costs, opt_cost)
             # don't include the best solution to prevent comparing a solution to itself
-            for j, sol in enumerate(best_sols[1:]):
-                # similarity to not-worse solutions
-                similarities_to_not_worse = [plot_utils.solution_similarity(sol, other_sol) for other_sol in best_sols[:j+1]]
+            for j, sol in enumerate(best_sols[:-1]):
+                # similarity to not-worse solutions - ones with equal or smaller cost
+                # the solutions are ordered in descending order of cost
+                similarities_to_not_worse = [plot_utils.solution_similarity(sol, other_sol) for other_sol in best_sols[j+1:]]
                 avg_sim = np.mean(similarities_to_not_worse)
                 ax[row, column].plot(best_qualities[j+1], avg_sim, c=plot_utils.COLOR_DICT[search_type], marker="o", ms=2, alpha=0.3)
         ax[row, column].set_title(f"{instance}")
@@ -43,4 +44,6 @@ def plot_local_opt_quality_vs_not_worse_sim(
 
 
 if __name__ == "__main__":
-    plot_local_opt_quality_vs_not_worse_sim(export_path="not_tight_local_opt_quality_vs_sim.pdf", export_pdf=True, show_plot=True)
+    plot_local_opt_quality_vs_not_worse_sim(
+        export_path="not_tight_local_opt_quality_vs_sim.pdf", export_pdf=True,
+        show_plot=True)
