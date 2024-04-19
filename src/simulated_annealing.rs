@@ -45,20 +45,23 @@ fn deltas_simulated_annealing_select_swap(
 
 fn find_initial_temperature(
     instance: &QapInstance,
-    solution: &QapSolution,
-    neighborhood_size: usize,
     acceptance_prob: f32,
 ) -> f32 {
+    let num_solutions: usize = instance.instance_size;
+    let neighbors_per_solution: usize = 10;
     let mut deltas: Vec<i32> = vec![];
-    for i in 0..neighborhood_size {
-        let row: usize = i / instance.instance_size;
-        let column: usize = i % instance.instance_size;
-        // an ugly workaround to prevent calculating the same deltas twice
-        if row >= column {
-            continue;
+    for _i in 0..num_solutions {
+        let solution: QapSolution = QapSolution::random_solution(instance.instance_size);
+        for i in 0..neighbors_per_solution {
+            let row: usize = i / instance.instance_size;
+            let column: usize = i % instance.instance_size;
+            // an ugly workaround to prevent calculating the same deltas twice
+            if row >= column {
+                continue;
+            }
+            let delta: i32 = swap_delta(&instance, &solution, row, column);
+            deltas.push(delta);
         }
-        let delta: i32 = swap_delta(&instance, &solution, row, column);
-        deltas.push(delta);
     }
     deltas.sort_unstable();
     let len_deltas: usize = deltas.len();
@@ -70,7 +73,9 @@ fn find_initial_temperature(
     let boundary_delta: i32 = deltas[idx];
     // e^(-delta/T) = prob
     // T = -delta/ln(prob)
-    -(boundary_delta as f32) / acceptance_prob.ln()
+    // this means that the temperature is set to accept the 95th
+    // percentile with 50% probability
+    -(boundary_delta as f32) / 0.5_f32.ln()
 }
 
 pub fn deltas_simulated_annealing(
@@ -102,23 +107,20 @@ pub fn deltas_simulated_annealing(
     let init_accept_prob: f32 = 0.95;
     let final_accept_prob: f32 = 0.01;
     let cooling_constant: f32 = 0.9;
-    let markov_chain_length: u32 = (0.125 * neighborhood_size as f32) as u32;
+    // this might be too long, given that changing the temperature occurs
+    // after evaluating many solutions
+    // let markov_chain_length: u32 = (0.125 * neighborhood_size as f32) as u32;
+    let markov_chain_length: u32 = 5;
     let no_improvement_cap: u32 = 10 * markov_chain_length;
-    let global_no_improvement_cap: u32 = 2 * no_improvement_cap;
     // e^(-delta/T) = prob
     // Minimum deteriorating delta is 1
     // the final temperature can be calculated using -1/ln(acceptance_prob)
     let final_temperature: f32 = -1.0 / final_accept_prob.ln();
     let mut best_cost: u32 = cost;
-    let mut temperature: f32 = find_initial_temperature(
-        &instance,
-        &starting_solution,
-        neighborhood_size,
-        init_accept_prob,
-    );
+    let mut temperature: f32 =
+        find_initial_temperature(&instance, init_accept_prob);
 
     // loop helper variables
-    let mut iter_without_improvement: u32 = 0;
     let mut iter_in_chain: u32 = 0;
     let mut iter_without_global_improvement: u32 = 0;
     // main search loop
@@ -136,46 +138,33 @@ pub fn deltas_simulated_annealing(
             temperature *= cooling_constant;
             iter_in_chain = 0;
         }
-        if delta >= 0 {
-            iter_without_improvement += 1;
-        } else {
-            iter_without_improvement = 0;
-        }
         // (0, 0, 1 is a special case - when no improvement was found, and no deterioration was accepted)
         // it can be handled in at least two ways:
         // - terminate the algorithm
         // - give the neighborhood another chance - maybe next time some deterioration will be accepted
-        // the second approach is chosen here. Only some monitoring operations are omitted
         if (idx_a, idx_b, delta) == (0, 0, 1) {
-            iter_without_global_improvement += 1;
-            if (iter_without_improvement >= no_improvement_cap && temperature <= final_temperature)
-                || iter_without_global_improvement >= global_no_improvement_cap
-            {
-                break;
-            }
-            continue;
+            break;
         }
         // num_evaluations is updated within the swap-finding function
-        monitor.cost_updates_evals.push(monitor.num_evaluations);
         starting_solution.assignments.swap(idx_a, idx_b);
         monitor.num_visited_solutions += 1;
         cost = ((cost as i32) + delta) as u32;
-        monitor.cost_history.push(cost);
         if cost < best_cost {
+            monitor.cost_history.push(cost);
+            monitor.cost_updates_evals.push(monitor.num_evaluations);
             best_cost = cost;
             monitor.best_assignments = starting_solution.assignments;
             iter_without_global_improvement = 0;
         } else {
             iter_without_global_improvement += 1;
         }
-        if (iter_without_improvement >= no_improvement_cap && temperature <= final_temperature)
-            || iter_without_global_improvement >= global_no_improvement_cap
+        if iter_without_global_improvement >= no_improvement_cap && temperature <= final_temperature
         {
             break;
         }
     }
     let duration: time::Duration = start.elapsed();
     monitor.running_time_micros = duration.as_micros() as u32;
-    // monitor.export_to_files();
+    monitor.export_to_files();
     starting_solution
 }
