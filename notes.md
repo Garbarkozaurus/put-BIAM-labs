@@ -103,6 +103,10 @@ Stopping condition - up to you, check eKursy
 Tabu list - based on lecture info, store just the identifiers
 
 How to understand "no improvement"? No local improvement, or no local improvement?
+-> No global improvement
 Dealing with 95% acceptance chance
+-> For the entire landscape - sample from multiple solutions, from each a few deltas.
 Is my 1% acceptance chance in the end correct? (maybe I should consider a deterioration bigger than 1)
+-> Feel free to tweak it
 Elite candidate list - should k be a fixed small number (I am leaning towards this option), or depend on instance size?
+-> A small constant is ok. Depending on instance size would just be an extra thing to test.
