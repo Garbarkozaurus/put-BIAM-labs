@@ -33,7 +33,9 @@ def quality_plot(export_path: str = "quality_plot.pdf",
             ax[row, column].spines["left"].set_linewidth(2)
         else:
             ax[row, column].set(yticks=[0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.0])
-    plt.setp(ax, xticks=list(range(4)), xticklabels=["R", "RW", "G", "S"])
+    plt.setp(ax, xticks=list(range(len(plot_utils.SEARCH_TYPES))),
+             xticklabels=[plot_utils.LABELS_SEARCH_TYPES[st]
+                          for st in plot_utils.SEARCH_TYPES])
     plt.tight_layout()
     plt.gcf().set_size_inches(12, 6)
     if export_pdf:
@@ -157,16 +159,16 @@ def efficiency_plot(
 
 if __name__ == "__main__":
     # Quality plot
-    # quality_plot(show_plot=True, export_pdf=True)
+    quality_plot(show_plot=True, export_pdf=False)
 
     # Runtime plot
-    # monitored_stat_plot("runtime", ("mean"), show_plot=True, export_pdf=True)
+    monitored_stat_plot("runtime", ("mean"), show_plot=True, export_pdf=False)
 
     # Efficiency plots
     # efficiency_plot(("mean"), "evaluated", show_plot=True, export_pdf=True)
     # efficiency_plot(("mean"), "visited", show_plot=True, export_pdf=True)
     # efficiency_plot(("min", "mean", "max"), "evaluated", show_plot=True)
-    efficiency_plot(efficiency_mode="running_time", export_path="efficiency_running_time.pdf", export_pdf=True, show_plot=True)
+    # efficiency_plot(efficiency_mode="running_time", export_path="efficiency_running_time.pdf", export_pdf=True, show_plot=True)
 
     # Average number of algorithm steps (number of visited solutions)
     # monitored_stat_plot("visited", search_types=["greedy", "steepest"], export_path="visited_gs_plot.pdf", export_pdf=True, show_plot=True)
