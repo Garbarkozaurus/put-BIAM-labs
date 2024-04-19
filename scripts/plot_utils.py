@@ -3,11 +3,12 @@ import matplotlib.pyplot as plt
 
 
 SEARCH_TYPES = ["random_search", "random_walk", "greedy", "steepest",
-                "simulated_annealing"]
+                "simulated_annealing", "tabu_search"]
 
 LABELS_SEARCH_TYPES = {"random_search": "R", "random_walk": "RW",
                        "greedy": "G", "steepest": "S",
-                       "simulated_annealing": "SA"}
+                       "simulated_annealing": "SA",
+                       "tabu_search": "TS"}
 
 INSTANCE_NAMES = ["tai10a", "tai20a", "tai30b", "tai40b", "tai50b", "tai60a",
                   "tai80a", "tai100b"]
@@ -17,7 +18,8 @@ COLOR_DICT = {
     "random_walk": "olive",
     "greedy": "blue",
     "steepest": "red",
-    "simulated_annealing": "cyan"
+    "simulated_annealing": "cyan",
+    "tabu_search": "magenta"
 }
 
 
