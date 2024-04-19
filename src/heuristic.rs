@@ -54,7 +54,7 @@ pub fn assign_minimum_products(instance: &QapInstance) -> QapSolution {
     }
     let mut product_order: Vec<usize> = argsort(&products);
     let mut heuristic_assignments: [usize; MAX_INSTANCE_SIZE] = [0; MAX_INSTANCE_SIZE];
-    for i in 0..instance.instance_size {
+    for _i in 0..instance.instance_size {
         let row_a: usize = product_order[0] / instance.instance_size;
         let row_b: usize = product_order[0] % instance.instance_size;
         heuristic_assignments[row_a] = row_b;
