@@ -57,3 +57,10 @@ pub fn swap_delta(
 
     new_subcost as i32 - old_subcost as i32
 }
+
+/// Taken from: https://stackoverflow.com/questions/69764050/how-to-get-the-indices-that-would-sort-a-vec
+pub fn argsort<T: Ord>(data: &[T]) -> Vec<usize> {
+    let mut indices: Vec<usize> = (0..data.len()).collect::<Vec<_>>();
+    indices.sort_by_key(|&i| &data[i]);
+    indices
+}
