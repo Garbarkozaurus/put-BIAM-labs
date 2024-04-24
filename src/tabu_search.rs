@@ -10,7 +10,7 @@ use std::cmp::min;
 use std::i32::MAX;
 use std::time;
 
-const NUM_CANDIDATES: usize = 45;
+const NUM_CANDIDATES: usize = 10;
 
 /// Returns: list of candidate swaps - NODE IDs, idx_a_best_swap, idx_b_best_swap, best delta, worst delta
 fn find_candidates(
@@ -154,6 +154,7 @@ fn tabu_best_swap(
         // special case, handled in the search function
         return (0, 0, 1);
     }
+    *good_candidates -= 1;
     (
         swap_locations[chosen_candidate][0],
         swap_locations[chosen_candidate][1],
@@ -216,6 +217,9 @@ pub fn deltas_tabu_search(instance: &QapInstance, run_id: u32, instance_name: &s
                 find_candidates(instance, &starting_solution, &mut monitor);
             cost_threshold = ((current_cost as i32) + worst_delta) as u32;
             good_candidates = NUM_CANDIDATES - 1;
+            if best_delta > 0 {
+                break;
+            }
             delta = best_delta;
         } else {
             (idx_a, idx_b, delta) = tabu_best_swap(
