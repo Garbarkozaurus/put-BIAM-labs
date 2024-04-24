@@ -27,17 +27,23 @@ def quality_plot(export_path: str = "quality_plot.pdf",
                     capsize=2, c=plot_utils.COLOR_DICT[search_type])
             ax[row, column].plot(j, avg_ratio,  marker="o", c=plot_utils.COLOR_DICT[search_type])
             ax[row, column].plot(j, max_ratio, marker="+", c=plot_utils.COLOR_DICT[search_type])
-        if instance == "tai60a" or instance == "tai80a":
-            ax[row, column].set(yticks=[0.88, 0.90, 0.92, 0.94, 0.96, 0.98, 1.0])
+        ax[row, column].grid(axis='y')
+        # if instance == "tai60a" or instance == "tai80a":
+            # ax[row, column].set(yticks=[0.88, 0.90, 0.92, 0.94, 0.96, 0.98, 1.0])
             # ax[row, column].spines["left"].set_color("")
-            ax[row, column].spines["left"].set_linewidth(2)
-        else:
-            ax[row, column].set(yticks=[0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.0])
+        #     ax[row, column].spines["left"].set_linewidth(2)
+        # else:
+        #     ax[row, column].set(yticks=[0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.0])
+        ax[row, column].axhline(opt_cost/plot_utils.HEURISTIC_COSTS[i], linestyle="dashed", c="black")
     plt.setp(ax, xticks=list(range(len(plot_utils.SEARCH_TYPES))),
              xticklabels=[plot_utils.LABELS_SEARCH_TYPES[st]
                           for st in plot_utils.SEARCH_TYPES])
     plt.tight_layout()
     plt.gcf().set_size_inches(12, 6)
+    # print(plt.rcParams.keys())
+    # print(fig.rcParams.keys())
+    plt.subplots_adjust(hspace=0.3)
+    plt.subplots_adjust(wspace=0.3)
     if export_pdf:
         plt.savefig(export_path, format="pdf")
     if show_plot:
@@ -59,6 +65,7 @@ def monitored_stat_plot(
         row = i // n_cols
         column = i % n_cols
         ax[row, column].set_title(instance)
+        ax[row, column].grid(axis='y')
         for j, search_type in enumerate(search_types):
             file_name = f"../saved_results/{search_type}/{instance}.txt"
             stat_values = plot_utils.extract_monitored_stat_by_column(
@@ -85,6 +92,8 @@ def monitored_stat_plot(
                     c=plot_utils.COLOR_DICT[search_type])
             if stat == "runtime" or "evaluated":
                 ax[row, column].ticklabel_format(axis='y', style='sci', scilimits=(3,4))
+        if stat == "runtime":
+            ax[row, column].axhline(plot_utils.HEURISTIC_AVG_RUNNING_TIMES[i], linestyle="dashed", c="black")
     plt.setp(ax, xticks=list(range(len(search_types))),
             xticklabels=[plot_utils.LABELS_SEARCH_TYPES[st]
                         for st in search_types])
@@ -112,6 +121,7 @@ def efficiency_plot(
         row = i // n_cols
         column = i % n_cols
         ax[row, column].set_title(instance)
+        ax[row, column].grid(axis='y')
         opt_cost, opt_sol = results_loading.load_optimum(instance)
         for j, search_type in enumerate(search_types):
             efficiency_values = plot_utils.efficiency_values(opt_cost, instance, search_type, efficiency_mode)
@@ -127,14 +137,18 @@ def efficiency_plot(
                 ax[row, column].plot(
                     j, stat_mean,  marker="o",
                     c=plot_utils.COLOR_DICT[search_type])
-                if search_type != "greedy":
-                    ax[row, column].text(j, 1.5*stat_mean, str(np.round(stat_mean, 3)), horizontalalignment="left", verticalalignment="center", size=12)
-                else:
-                    ax[row, column].text(j, 1.1*stat_mean, str(np.round(stat_mean, 3)), horizontalalignment="left", verticalalignment="center", size=12)
+                # if search_type != "greedy":
+                #     ax[row, column].text(j, 1.5*stat_mean, str(np.round(stat_mean, 3)), horizontalalignment="left", verticalalignment="center", size=12)
+                # else:
+                #     ax[row, column].text(j, 1.1*stat_mean, str(np.round(stat_mean, 3)), horizontalalignment="left", verticalalignment="center", size=12)
             if "max" in reported_agg:
                 ax[row, column].plot(
                     j, np.max(efficiency_values),  marker="+",
                     c=plot_utils.COLOR_DICT[search_type])
+            # if efficiency_mode == "running_time":
+            #     heuristic_quality = opt_cost/plot_utils.HEURISTIC_COSTS[i]
+            #     ax[row, column].axhline(heuristic_quality/plot_utils.HEURISTIC_AVG_RUNNING_TIMES[i], linestyle="dashed", c="black")
+
     plt.setp(ax, xticks=list(range(len(search_types))),
              xticklabels=[plot_utils.LABELS_SEARCH_TYPES[st]
                           for st in search_types],
@@ -159,10 +173,10 @@ def efficiency_plot(
 
 if __name__ == "__main__":
     # Quality plot
-    quality_plot(show_plot=True, export_pdf=False)
+    # quality_plot(show_plot=True, export_pdf=True)
 
     # Runtime plot
-    monitored_stat_plot("runtime", ("mean"), show_plot=True, export_pdf=False)
+    # monitored_stat_plot("runtime", ("mean"), show_plot=True, export_pdf=True)
 
     # Efficiency plots
     # efficiency_plot(("mean"), "evaluated", show_plot=True, export_pdf=True)
