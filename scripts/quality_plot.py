@@ -173,10 +173,10 @@ def efficiency_plot(
 
 if __name__ == "__main__":
     # Quality plot
-    # quality_plot(show_plot=True, export_pdf=True)
+    quality_plot(show_plot=True, export_pdf=True)
 
     # Runtime plot
-    # monitored_stat_plot("runtime", ("mean"), show_plot=True, export_pdf=True)
+    monitored_stat_plot("runtime", ("mean"), show_plot=True, export_pdf=True)
 
     # Efficiency plots
     # efficiency_plot(("mean"), "evaluated", show_plot=True, export_pdf=True)
