@@ -68,6 +68,21 @@ def extract_initial_costs(instance_name: str, search_type: str) -> np.ndarray[np
     return np.array(costs, dtype=np.int32)
 
 
+def extract_histories(
+        instance_name: str, search_type: str) -> tuple[list[int], list[int]]:
+    file_name = f"../saved_results/{search_type}/histories/{instance_name}.txt"
+    evals = []
+    costs = []
+    with open(file_name) as fp:
+        lines = fp.readlines()
+        for line in lines:
+            evals_costs = line.split(';')[1] # discard run id
+            e, c = zip(*[[int(pair.split(':')[0]), int(pair.split(':')[1])] for pair in evals_costs.split(',')])
+            evals.append(e)
+            costs.append(c)
+    return evals, costs
+
+
 def efficiency_values(optimal_cost: int, instance_name: str, search_type: str,
                       mode: str = "evaluated") -> np.ndarray[np.float64]:
     """Efficiency is measured as: (neighborhood_size * best_cost)/(optimal_cost * num_evaluated_solutions)
@@ -121,11 +136,13 @@ def extract_best_sols(instance_name: str, search_type: str) -> np.ndarray[np.int
 
 
 def color_explaining_plot() -> None:
+    text_color = "black"
     for i, (search, color) in enumerate(COLOR_DICT.items()):
-        plt.bar(i*4, 4, 4, color=color, label=search, align="center")
-        plt.text(i*4, 2, search, ha="center", va="center", color="white", weight="bold")
-
-    plt.gcf().set_size_inches(10, 2.5)
+        plt.bar(i*6, 6, 6, color=color, label=search, align="center")
+        plt.text(i*6, 3, LABELS_SEARCH_TYPES[search], ha="center", va="center",
+                color=text_color, weight="bold", size=24)
+    plt.tight_layout()
+    plt.gcf().set_size_inches(12, 2)
     plt.axis("off")
     plt.show()
 
