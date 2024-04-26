@@ -33,13 +33,14 @@ def history_plot_subplots(search_types: list[str], n_runs: int = 500) -> None:
         opt_cost, _ = results_loading.load_optimum(instance)
         order = np.arange(len(search_types))
         all_evals, all_costs = zip(*([plot_utils.extract_histories(instance, search_type) for search_type in search_types]))
-        for i in range(n_runs):
+        for j in range(n_runs):
             np.random.shuffle(order)
             for search_idx in order:
-                evals = all_evals[search_idx][i]
-                costs = all_costs[search_idx][i]
+                evals = all_evals[search_idx][j]
+                costs = all_costs[search_idx][j]
                 ax[row, column].plot(evals, plot_utils.qualities_from_costs(costs, opt_cost), c=plot_utils.COLOR_DICT[plot_utils.SEARCH_TYPES[search_idx]], marker=".", alpha=0.5, markersize=1, linestyle="None")
         ax[row, column].grid(axis='y')
+        # ax[row, column].axhline(opt_cost/plot_utils.HEURISTIC_COSTS[i], c="black", linestyle="dashed")
     plt.tight_layout()
     fig.set_size_inches(12, 6)
     plt.subplots_adjust(hspace=0.3)
