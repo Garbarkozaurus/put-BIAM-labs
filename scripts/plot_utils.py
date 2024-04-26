@@ -24,7 +24,7 @@ COLOR_DICT = {
 
 # include tai256c
 HEURISTIC_COSTS = [168236, 908848, 1387185541, 1086211193, 788404422, 8373936, 15638632, 1574846615, 98685678]
-HEURISTIC_AVG_RUNNING_TIMES = [0.024, 0.006, 0.004, 0.038, 1.026, 1.76, 1.164, 2.004, 2.278, 4.01, 5.438, 14.814]
+HEURISTIC_AVG_RUNNING_TIMES = [0.024, 0.004, 1.026, 1.164, 2.004, 2.278, 4.01, 5.438, 14.814]
 
 
 def extract_monitored_stat_by_column(file_path: str, column_number: int) -> np.ndarray[np.int32]:
@@ -145,6 +145,18 @@ def color_explaining_plot() -> None:
     plt.gcf().set_size_inches(12, 2)
     plt.axis("off")
     plt.show()
+
+
+def extract_heuristic_running_times(
+        file_path: str = "./heuristic_runtimes.txt") -> dict[str, list[int]]:
+    ret_dict = dict(zip(INSTANCE_NAMES, [[] for _ in INSTANCE_NAMES]))
+    with open(file_path, "r") as fp:
+        lines = fp.readlines()
+        for line in lines:
+            instance_name, runtime = line.split(',')
+            runtime = int(runtime)
+            ret_dict[instance_name].append(runtime)
+    return ret_dict
 
 
 if __name__ == "__main__":
