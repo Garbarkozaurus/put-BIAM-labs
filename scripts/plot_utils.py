@@ -148,7 +148,7 @@ def color_explaining_plot() -> None:
 
 
 def extract_heuristic_running_times(
-        file_path: str = "./heuristic_runtimes.txt") -> dict[str, list[int]]:
+        file_path: str = "../saved_results/heuristic_runtimes.txt") -> dict[str, list[int]]:
     ret_dict = dict(zip(INSTANCE_NAMES, [[] for _ in INSTANCE_NAMES]))
     with open(file_path, "r") as fp:
         lines = fp.readlines()
