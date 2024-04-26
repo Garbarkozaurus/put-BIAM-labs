@@ -112,6 +112,7 @@ def efficiency_plot(
         reported_agg: tuple[str] = ("mean"),
         efficiency_mode: Literal["evaluated"] | Literal["visited"] | Literal["running_time"] = "evaluated",
         search_types: list[str] = plot_utils.SEARCH_TYPES,
+        include_heuristic: bool = False,
         export_path: str = "", export_pdf: bool = False,
         show_plot: bool = False) -> None:
     n_rows = 2
@@ -146,8 +147,23 @@ def efficiency_plot(
                     j, np.max(efficiency_values),  marker="+",
                     c=plot_utils.COLOR_DICT[search_type])
             # if efficiency_mode == "running_time":
-            #     heuristic_quality = opt_cost/plot_utils.HEURISTIC_COSTS[i]
             #     ax[row, column].axhline(heuristic_quality/plot_utils.HEURISTIC_AVG_RUNNING_TIMES[i], linestyle="dashed", c="black")
+        if include_heuristic:
+            heuristic_quality = opt_cost/plot_utils.HEURISTIC_COSTS[i]
+            # if instance[3:6].isnumeric():
+            #     instance_size = float(instance[3:6])
+            # else:
+            #     instance_size = float(instance[3:5])
+            # norm_factor = 0.5 * instance_size * (instance_size-1)
+            norm_factor = 1.0
+            match efficiency_mode:
+                case "running_time":
+                    ax[row, column].axhline(norm_factor*heuristic_quality/plot_utils.HEURISTIC_AVG_RUNNING_TIMES[i], linestyle="dashed", c="black")
+                # in other cases, heuristic evaluated/visited 0 or 1 solution (depending on the interpretation),
+                # so it only makses sense to have the efficiency value equal to raw quality
+                case _:
+                    ax[row, column].axhline(norm_factor*heuristic_quality, linestyle="dashed", c="black")
+
 
     plt.setp(ax, xticks=list(range(len(search_types))),
              xticklabels=[plot_utils.LABELS_SEARCH_TYPES[st]
@@ -171,6 +187,53 @@ def efficiency_plot(
         plt.show()
 
 
+def heuristic_runtime_plot() -> None:
+    def instance_size_from_name(instance_name: str) -> int:
+        if instance_name[3:6].isnumeric():
+            return int(instance_name[3:6])
+        else:
+            return int(instance_name[3:5])
+    instance_sizes = [instance_size_from_name(instance) for instance in plot_utils.INSTANCE_NAMES]
+    runtime_dict = plot_utils.extract_heuristic_running_times()
+    average_runtimes = [np.mean(runtimes) for runtimes in runtime_dict.values()]
+    # plt.plot(instance_sizes, average_runtimes, linestyle="dashed", marker="o", c="black")
+    plt.errorbar(instance_sizes, average_runtimes, [np.std(rt) for rt in runtime_dict.values()], c="black", capsize=2, marker="o", linestyle="dashed")
+    plt.xticks(np.arange(10, 101, 10))
+    for i, _ in enumerate(plot_utils.INSTANCE_NAMES):
+        runtime = average_runtimes[i]
+        plt.text(instance_sizes[i]+0.2, runtime-0.3, str(np.round(runtime, 3)), horizontalalignment="left", verticalalignment="top", size=11)
+    plt.grid()
+    plt.show()
+
+
+def heuristic_quality_and_runtime() -> None:
+    def instance_size_from_name(instance_name: str) -> int:
+        if instance_name[3:6].isnumeric():
+            return int(instance_name[3:6])
+        else:
+            return int(instance_name[3:5])
+    runtime_dict = plot_utils.extract_heuristic_running_times()
+    fig, ax1 = plt.subplots()
+    instance_sizes = [instance_size_from_name(instance) for instance in plot_utils.INSTANCE_NAMES]
+    color = "black"
+    ax1.set_xlabel("Instance size")
+    ax1.set_ylabel("Average time", color=color)
+    averages = [np.mean(runtimes) for runtimes in runtime_dict.values()]
+    ax1.plot(instance_sizes, averages, linestyle="dashed", marker="o", c=color)
+    ax1.errorbar(instance_sizes, averages, yerr=[np.std(runtimes) for runtimes in runtime_dict.values()], linestyle="dashed", marker="o", c=color, capsize=2)
+    ax1.tick_params(axis='y', labelcolor=color)
+    ax1.set_xticks(np.arange(10, 101, 10))
+    ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+    color2 = "green"
+    opt_costs = [results_loading.load_optimum(instance)[0] for instance in plot_utils.INSTANCE_NAMES]
+    qualities = [opt_cost/cost for opt_cost, cost in zip(opt_costs, plot_utils.HEURISTIC_COSTS[:-1])]
+    ax2.set_ylabel("Quality", color=color2)  # already handled the x-label with ax1
+    ax2.plot(instance_sizes, qualities, linestyle="dashed", marker="o", color=color2)
+    ax2.tick_params(axis='y', labelcolor=color2)
+    plt.tight_layout()
+    plt.show()
+
+
 if __name__ == "__main__":
     # Quality plot
     quality_plot(show_plot=True, export_pdf=True)
@@ -190,3 +253,7 @@ if __name__ == "__main__":
 
     # Average number of evaluated solutions
     # monitored_stat_plot("evaluated", ("mean"), export_pdf=True, show_plot=True)
+
+    # Heuristic runtime plots
+    # heuristic_runtime_plot()
+    # heuristic_quality_and_runtime()
