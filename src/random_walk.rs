@@ -34,11 +34,11 @@ pub fn random_walk(
     let mut current_cost: u32 = basic_evaluate(&instance, &best_solution);
     let mut best_cost: u32 = current_cost;
     monitor.cost_history.push(best_cost);
-    let mut rng: ThreadRng = rand::thread_rng();
+    let mut rng: ThreadRng = rand::rng();
     while (start.elapsed().as_micros() as u32) < time_limit_micros {
-        let idx_a: usize = rng.gen_range(0..instance.instance_size);
+        let idx_a: usize = rng.random_range(0..instance.instance_size);
         let idx_b: usize =
-            (rng.gen_range(0..instance.instance_size - 1) + idx_a + 1) % instance.instance_size;
+            (rng.random_range(0..instance.instance_size - 1) + idx_a + 1) % instance.instance_size;
         let delta: i32 = swap_delta(&instance, &current_solution, idx_a, idx_b);
         current_solution.assignments.swap(idx_a, idx_b);
         current_cost = ((current_cost as i32) + delta) as u32;

@@ -15,7 +15,7 @@ fn deltas_greedy_select_swap(
     monitor: &mut SearchMonitor,
     rng: &mut ThreadRng,
 ) -> (usize, usize, i32) {
-    let neighborhood_start: usize = rng.gen_range(0..neighborhood_size);
+    let neighborhood_start: usize = rng.random_range(0..neighborhood_size);
     for i in 0..neighborhood_size {
         let chosen_swap = (i + neighborhood_start) % neighborhood_size;
         // row and column refer to the imaginary "neighborhood matrix"
@@ -56,7 +56,7 @@ pub fn deltas_greedy_local_search(
     let mut starting_solution: QapSolution = QapSolution::random_solution(instance.instance_size);
     let mut cost: u32 = basic_evaluate(&instance, &starting_solution);
     monitor.cost_history.push(cost);
-    let mut rng: ThreadRng = rand::thread_rng();
+    let mut rng: ThreadRng = rand::rng();
     let neighborhood_size: usize = instance.instance_size * instance.instance_size;
     loop {
         let (idx_a, idx_b, delta) = deltas_greedy_select_swap(

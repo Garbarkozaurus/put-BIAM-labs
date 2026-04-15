@@ -4,7 +4,6 @@ use crate::utils::swap_delta;
 use crate::QapInstance;
 use crate::QapSolution;
 use crate::MAX_INSTANCE_SIZE;
-use rand::distributions::{Distribution, Uniform};
 use rand::prelude::ThreadRng;
 use rand::Rng;
 use std::time;
@@ -17,8 +16,8 @@ fn deltas_simulated_annealing_select_swap(
     monitor: &mut SearchMonitor,
     rng: &mut ThreadRng,
 ) -> (usize, usize, i32) {
-    let rand_01: Uniform<f32> = Uniform::from(0.0..1.0);
-    let neighborhood_start: usize = rng.gen_range(0..neighborhood_size);
+    let mut rand_generic: ThreadRng = rand::rng();
+    let neighborhood_start: usize = rng.random_range(0..neighborhood_size);
     for i in 0..neighborhood_size {
         let chosen_swap = (i + neighborhood_start) % neighborhood_size;
         // row and column refer to the imaginary "neighborhood matrix"
@@ -34,9 +33,8 @@ fn deltas_simulated_annealing_select_swap(
             return (row, column, delta);
         }
         let f_delta: f32 = (-1 * delta) as f32;
-        let rand_val: f32 = rand_01.sample(rng);
+        let rand_val: f32 = rand_generic.random();
         if (f_delta / temperature).exp() > rand_val {
-            // println!("{} > {} (delta: {delta}, temperature: {temperature})", (f_delta.exp() / temperature), rand_val);
             return (row, column, delta);
         }
     }
@@ -101,7 +99,7 @@ pub fn deltas_simulated_annealing(
     let neighborhood_size: usize = instance.instance_size * instance.instance_size;
     let mut cost: u32 = basic_evaluate(&instance, &starting_solution);
     monitor.cost_history.push(cost);
-    let mut rng: ThreadRng = rand::thread_rng();
+    let mut rng: ThreadRng = rand::rng();
 
     // simulated annealing configuration
     let init_accept_prob: f32 = 0.95;

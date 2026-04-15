@@ -39,8 +39,8 @@ fn naive_steepest_best_swap(instance: &QapInstance, solution: &QapSolution) -> (
             }
         }
     }
-    let mut rng: ThreadRng = rand::thread_rng();
-    let best_swap: [usize; 2] = best_swaps[rng.gen_range(0..neighbors_with_best_delta)];
+    let mut rng: ThreadRng = rand::rng();
+    let best_swap: [usize; 2] = best_swaps[rng.random_range(0..neighbors_with_best_delta)];
     (best_swap[0], best_swap[1], best_delta)
 }
 
@@ -85,8 +85,8 @@ fn delta_steepest_best_swap(
             }
         }
     }
-    let mut rng: ThreadRng = rand::thread_rng();
-    let best_swap: [usize; 2] = best_swaps[rng.gen_range(0..neighbors_with_best_delta)];
+    let mut rng: ThreadRng = rand::rng();
+    let best_swap: [usize; 2] = best_swaps[rng.random_range(0..neighbors_with_best_delta)];
     (best_swap[0], best_swap[1], best_delta)
 }
 

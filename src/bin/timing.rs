@@ -10,11 +10,9 @@ fn random_permutation<const LENGTH: usize>(
         array[i] = val;
     }
     for i in 0..LENGTH {
-        let src_idx: usize = rng.gen_range(0..LENGTH - i);
+        let src_idx: usize = rng.random_range(0..LENGTH - i);
         let target_idx: usize = LENGTH - i - 1;
-        let tmp = array[src_idx];
-        array[src_idx] = array[target_idx];
-        array[target_idx] = tmp;
+        array.swap(src_idx, target_idx);
         array.swap(src_idx, target_idx);
     }
     array
@@ -25,7 +23,7 @@ fn main() {
     const LENGTH: usize = 10;
     const MIN_REPEATS: u32 = 1_000_000;
     let mut repeats: u32 = 0;
-    let mut rng: ThreadRng = rand::thread_rng();
+    let mut rng: ThreadRng = rand::rng();
     let mut array: [i32; 10] = [0; LENGTH];
     let start: time::Instant = time::Instant::now();
     while start.elapsed() < MAX_TIME || repeats < MIN_REPEATS {
